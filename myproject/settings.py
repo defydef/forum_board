@@ -23,9 +23,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 from decouple import config, Csv
 import dj_database_url
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = '*=#6zg$-iq8y!9d#z56^=_q&cddsf6%kux1)!o4yzrn*&thjgh'
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 # DATABASES = {
     # 'default': dj_database_url.config(
         # default=config('DATABASE_URL')
