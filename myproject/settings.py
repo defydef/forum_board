@@ -25,13 +25,13 @@ import dj_database_url
 
 SECRET_KEY = '*=#6zg$-iq8y!9d#z56^=_q&cddsf6%kux1)!o4yzrn*&thjgh'
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
-# DATABASES = {
-    # 'default': dj_database_url.config(
-        # default=config('DATABASE_URL')
-    # )
-# }
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 DATABASE_URL = 'postgres://ctrqwtkqzgwfca:31f3eaeb4203a3f25ad992bd94bc56885ea3eb9fc484174dff75b97a25ae6ba2@ec2-107-20-255-96.compute-1.amazonaws.com:5432/d9d1pep7mpm2gc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
