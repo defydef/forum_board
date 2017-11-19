@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['*']
         # default=config('DATABASE_URL')
     # )
 # }
-# DATABASE_URL = 'postgres://ctrqwtkqzgwfca:31f3eaeb4203a3f25ad992bd94bc56885ea3eb9fc484174dff75b97a25ae6ba2@ec2-107-20-255-96.compute-1.amazonaws.com:5432/d9d1pep7mpm2gc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -209,8 +208,8 @@ LOGIN_URL = 'login'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'postmaster@sandbox9693494fb4df47aab36d4715062b47be.mailgun.org'
-EMAIL_HOST_PASSWORD = 'd1264019661a6c2762594202c765d2c7'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 # Simplified static file serving.
