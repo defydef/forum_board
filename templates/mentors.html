@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"> <a href="{% url 'mentors' %}"> Mentors </a> </li>
+{% endblock %}
+
+{% block content %}
+      
+	  {% for user in users %}
+        <ul>
+	   {% if user.username != 'admin' %}
+          <li> User name: {{ user.username }} </li>
+		  {% if user.email %}
+          <li> Email: {{ user.email }}</li>
+		  {% else %}		  
+		  This user has no email
+		  {% endif %}
+		  <li> Mobile: {{ user.profile.mobile }}</li>
+		  <li> Skills: {{ user.profile.skill }} </li>
+		  <li> Language: {{ user.profile.language }}</li>
+		  {% if user.profile.document %}
+		  <a href="{{ user.profile.document.url }}" > My profile </a>
+		  <br />
+		  {% endif %}
+		  {% if user.profile.avatar %}
+		  <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" height=100 width=100 />
+		  {% endif %}
+		{% endif %}
+        </ul>
+      {% endfor %}
+	  
+{% include 'includes/pagination.html' %}
+{% endblock %}

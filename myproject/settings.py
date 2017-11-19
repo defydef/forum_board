@@ -23,8 +23,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 from decouple import config, Csv
 import dj_database_url
 
-SECRET_KEY = '*=#6zg$-iq8y!9d#z56^=_q&cddsf6%kux1)!o4yzrn*&thjgh'
-DEBUG = config('DEBUG', default=False, cast=bool)
+# Postgre database configuration
+
+SECRET_KEY = config('SECRET_KEY')
+# DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 # DATABASES = {
@@ -32,10 +34,10 @@ ALLOWED_HOSTS = ['*']
         # default=config('DATABASE_URL')
     # )
 # }
-DATABASE_URL = 'postgres://ctrqwtkqzgwfca:31f3eaeb4203a3f25ad992bd94bc56885ea3eb9fc484174dff75b97a25ae6ba2@ec2-107-20-255-96.compute-1.amazonaws.com:5432/d9d1pep7mpm2gc'
+# DATABASE_URL = 'postgres://ctrqwtkqzgwfca:31f3eaeb4203a3f25ad992bd94bc56885ea3eb9fc484174dff75b97a25ae6ba2@ec2-107-20-255-96.compute-1.amazonaws.com:5432/d9d1pep7mpm2gc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
 # ALLOWED_HOSTS = []
 
@@ -54,9 +56,18 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'gravatar',
     'mathfilters',
+    'multiselectfield',
+    'django_memcached',
     
 	'boards',
     'accounts',
+    'mentors',
+    'tagging',
+    'tagulous',
+    'dal',
+    'dal_select2',
+    'django_select2',
+    'select2',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +82,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'myproject.urls'
 
-TEMPLATES = [
+TEMPLATES = [	
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
@@ -84,6 +95,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -95,13 +107,25 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+DB_NAME=config('DB_NAME')
+DB_USER=config('DB_USER')
+DB_PASS=config('DB_PASS')
+
 DATABASES = {
+    # 'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -144,17 +168,55 @@ STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = [
-    # os.path.join(BASE_DIR, 'static'),
-    os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(BASE_DIR, 'static'),
+    # os.path.join(PROJECT_ROOT, 'static'),
 ]
 
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_REDIRECT_URL = 'home'
+# Mapping for django-tags-input
+TAGS_INPUT_MAPPINGS = {
+    'accounts.NewSkill': {'field': 'skill_name', 'create_missing': True},
+}
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+        'select2': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+   }
+}
 
+# Select2 configuration
+SELECT2_CACHE_BACKEND = 'select2'
+CACHE_PREFIX = u'select2_'
+SELECT2_JS = 'static/js/select2.min.js'
+SELECT2_CSS = 'static/css/select2.css'
+I18N_PATH = u'//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n'
+I18N_AVAILABLE_LANGUAGES = [u'ar', u'az', u'bg', u'ca', u'cs', u'da', u'de', u'el', u'en', u'es', u'et', u'eu', u'fa', u'fi', u'fr', u'gl', u'he', u'hi', u'hr', u'hu', u'id', u'is', u'it', u'ja', u'km', u'ko', u'lt', u'lv', u'mk', u'ms', u'nb', u'nl', u'pl', u'pt-BR', u'pt', u'ro', u'ru', u'sk', u'sr-Cyrl', u'sr', u'sv', u'th', u'tr', u'uk', u'vi', u'zh-CN', u'zh-TW']
+
+# Login and logout URL
+LOGOUT_REDIRECT_URL = 'mentors'
+LOGIN_REDIRECT_URL = 'mentors'
 LOGIN_URL = 'login'
+
+# Email host server configuration settings
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'postmaster@sandbox9693494fb4df47aab36d4715062b47be.mailgun.org'
+EMAIL_HOST_PASSWORD = 'd1264019661a6c2762594202c765d2c7'
+EMAIL_USE_TLS = True
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+# Media storage
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

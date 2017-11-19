@@ -1,0 +1,29 @@
+{% load static %}
+{% load form_tags widget_tweaks %}
+
+{% block content %}
+
+  {% for field in document_form %}
+  <div class="form-group">
+    {{ field.label_tag }}
+    {% render_field field class=field|input_class %} <!-- the input_class is coming from form_tags.py-->
+    
+    {% for error in field.errors %}
+        <div class="invalid-feedback">
+            {{ error }}
+        </div>
+    {% endfor %}
+
+    {% if field.help_text %}
+      <small class="form-text text-muted">
+        {{ field.help_text|safe }} <!-- The "safe" is so that the help text is not displayed in raw html, read https://simpleisbetterthancomplex.com/series/2017/09/25/a-complete-beginners-guide-to-django-part-4.html-->
+      </small>
+    {% endif %}
+  </div>
+{% endfor %}
+
+  <!-- {% if uploaded_file_url %} -->
+    <!-- <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p> -->
+  <!-- {% endif %} -->
+  
+{% endblock %}
